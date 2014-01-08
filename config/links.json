@@ -1,0 +1,8 @@
+module.exports = [{
+    ace: {
+        projectId: ''
+    },
+    assembla: {
+        space: ''
+    }
+}];

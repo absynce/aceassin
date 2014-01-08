@@ -11,4 +11,6 @@ pids
 logs
 results
 
+config/authentication.json
+
 npm-debug.log
