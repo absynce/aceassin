@@ -1,0 +1,9 @@
+{
+    "node": true,
+    "indent": 4,
+    "strict": false,
+    "globals": {
+        "console": true
+    },
+    "white": true
+}

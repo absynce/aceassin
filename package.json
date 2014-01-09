@@ -1,0 +1,39 @@
+{
+  "name": "aceassin",
+  "version": "0.0.0",
+  "description": "Integration between Assembla and Ace project management tools.",
+  "main": "app.js",
+  "directories": {
+    "test": "test"
+  },
+  "dependencies": {
+    "grunt": "~0.4.2"
+  },
+  "devDependencies": {
+    "grunt-release": "~0.6.0",
+    "grunt-contrib-watch": "~0.5.3",
+    "grunt-cafe-mocha": "~0.1.10",
+    "grunt-contrib-jshint": "~0.8.0",
+    "should": "~2.1.1"
+  },
+  "engines": {
+    "node": "0.10.x"
+  },
+  "scripts": {
+    "test": "mocha test/init.js test/**/*.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/absynce/aceassin.git"
+  },
+  "keywords": [
+    "assembla",
+    "ace",
+    "integration"
+  ],
+  "author": "Jared M. Smith",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/absynce/aceassin/issues"
+  }
+}
