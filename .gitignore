@@ -13,6 +13,6 @@ results
 
 node_modules
 
-config/authentication.json
+config/authentication.js
 
 npm-debug.log

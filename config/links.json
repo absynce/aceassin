@@ -1,9 +1,0 @@
-module.exports = [{
-    ace: {
-        projectId: '186800',
-        url : 'http://ace.iwtsolutions.com/aceproject-api'
-    },
-    assembla: {
-        space: 'iwt'
-    }
-}];
