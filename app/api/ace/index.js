@@ -1,4 +1,12 @@
-function aceFactory(auth, comment, extend, http, https, project, task, querystring) {
+function aceFactory(auth,
+                    comment,
+                    extend,
+                    http,
+                    https,
+                    JSONL,
+                    project,
+                    task,
+                    querystring) {
     function Ace(options) {
         this.defaults = {
             accountId: '',
@@ -24,7 +32,7 @@ function aceFactory(auth, comment, extend, http, https, project, task, querystri
     Ace.prototype.request = function (fct, requestObject, callback) {
         var agent   = http;
         var options = {
-            hostname: this.url,
+            hostname: this.options.hostname,
         };
 
         if (this.options.ssl) {
@@ -33,11 +41,25 @@ function aceFactory(auth, comment, extend, http, https, project, task, querystri
         
         // Join fct and path to options.
         requestObject.format = 'json'; // Set response format to JSON.
-        var query = '?fct=' + fct + querystring.stringify(requestObject);
-        options.path = path + query;
+        var query = '?fct=' + fct + '&' + querystring.stringify(requestObject);
+        options.path = this.options.path + query;
 
         agent.get(options, function (res) {
-            callback(res);
+            var data = '';
+            res.setEncoding('utf8');
+            res.on('data', function (chunk) {
+                data += chunk;
+            }).on('end', function () {
+                try {
+                    var responseObject = JSONL.parse(data);
+                    callback(null, responseObject);
+                }
+                catch (ex) {
+                    callback(new Error('Could not parse JSON from data.', data));
+                }
+            });
+        }).on('error', function (error) {
+            callback(error);
         });
     };
 
@@ -46,7 +68,15 @@ function aceFactory(auth, comment, extend, http, https, project, task, querystri
 
 // AMD boilerplate
 (function (define) {
-    define(['./auth', './comment', 'extend', 'http', 'https', './project', './task', 'querystring'], aceFactory);
+    define(['./auth',
+            './comment',
+            'extend',
+            'http',
+            'https',
+            'json-literal',
+            './project',
+            './task',
+            'querystring'], aceFactory);
 }(
     typeof define == 'function' && define.amd ? define 
     : function (ids, factory) {

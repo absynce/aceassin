@@ -11,6 +11,7 @@ var testAce = module.exports = function testAce() {
                 var ace = require('../../../app/api/ace/index');
 
                 should.exist(ace.auth);
+                should.exist(ace.project);
 
                 done();
             });
@@ -22,9 +23,11 @@ var testAce = module.exports = function testAce() {
                 var credentials = require('../../../config/authentication').ace; 
                 
                 var ace = new Ace(links[0].ace);
-                ace.auth.logIn(credentials.username, credentials.password, function (err, guid) {
+                ace.auth.logIn(credentials.username, credentials.password, function (err, data) {
                     should.not.exist(err);
-                    guid.should.be.a.String;
+                    data.status.should.equal('ok');
+                    data.results[0].GUID.should.be.a.String;
+                    done();
                 });
             });
     });

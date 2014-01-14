@@ -3,19 +3,18 @@ function authFactory(extend) {
         this.defaults = {
             ace: null // Parent ace object.
         };
+        this.options = extend(this.defaults, options);
     }
 
     Auth.prototype.logIn = function (username, password, callback) {
-        console.log('Calling Auth.prototype.logIn with ', arguments);
-        
         var requestObject = {
-            accountId: this.ace.accountId,
+            accountId: this.options.ace.options.accountId,
             username: username,
             password: password
         };
-        this.ace.request('login', // TODO: Finish this request.
-
-        callback(new Error('Not implemented'));
+        this.options.ace.request('login', requestObject, function (err, data) {
+            callback(err, data);
+        });
     };
 
     return Auth;
