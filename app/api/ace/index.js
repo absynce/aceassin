@@ -20,13 +20,22 @@ function aceFactory(auth,
     }
 
     // Add each api as separate module.
-    Ace.auth    = auth;
-    Ace.comment = comment;
-    Ace.project = project;
-    Ace.task    = task;
+    Ace.Auth    = auth;
+    Ace.Comment = comment;
+    Ace.Project = project;
+    Ace.Task    = task;
+
+    // to add related ace instance.
+    Ace.prototype.projects = [];
+    Ace.prototype.projects.add = function (project) {
+        project.ace = this.ace;
+        this.push(project);
+        return project;
+    };
 
     Ace.prototype.init = function () {
-        this.auth = new auth({ ace: this });
+        this.auth         = new auth({ ace: this });
+        this.projects.ace = this;
     };
 
     Ace.prototype.request = function (fct, requestObject, callback) {
@@ -62,6 +71,7 @@ function aceFactory(auth,
             callback(error);
         });
     };
+    
 
     return Ace;
 }
@@ -85,13 +95,13 @@ function aceFactory(auth,
             module.exports = factory.apply(null, deps);
         }
         else {
-            this.ace = factory(this.ace.auth,
-                               this.ace.comment,
+            this.Ace = factory(this.Ace.Auth,
+                               this.Ace.Comment,
                                jQuery.extend,
                                http,
                                https,
-                               this.ace.project,
-                               this.ace.task);
+                               this.Ace.Project,
+                               this.Ace.Task);
         }
     }.bind(this)
 ));

@@ -8,10 +8,10 @@ var testAce = module.exports = function testAce() {
     describe('api/ace', function () {
         it('should return a module with auth, comment, project, and task items',
             function (done) {
-                var ace = require('../../../app/api/ace/index');
+                var Ace = require('../../../app/api/ace/index');
 
-                should.exist(ace.auth);
-                should.exist(ace.project);
+                should.exist(Ace.Auth);
+                should.exist(Ace.Project);
 
                 done();
             });

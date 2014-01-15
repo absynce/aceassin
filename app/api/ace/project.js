@@ -1,8 +1,9 @@
-function projectFactory() {
+function projectFactory(extend) {
     function Project(options) {
         this.defaults = {
-            projectId: 0
+            id: 0
         };
+        this.options = extend(this.defaults, options);
     }
 
     Project.prototype.add = function (message) {
@@ -13,7 +14,7 @@ function projectFactory() {
 
 // AMD boilerplate
 (function (define) {
-    define([], projectFactory);
+    define(['extend'], projectFactory);
 }(
     typeof define == 'function' && define.amd ? define 
     : function (ids, factory) {
@@ -23,7 +24,7 @@ function projectFactory() {
         }
         else {
             this.ace = this.ace || { };
-            this.ace.project = factory();
+            this.ace.project = factory(jQuery.extend);
         }
     }.bind(this)
 ));
