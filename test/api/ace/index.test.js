@@ -15,21 +15,6 @@ var testAce = module.exports = function testAce() {
 
                 done();
             });
-        
-        it('should successfully log in with auth, returning a guid',
-            function (done) {
-                var Ace         = require('../../../app/api/ace/index');
-                var links       = require('../../../config/links');
-                var credentials = require('../../../config/authentication').ace; 
-                
-                var ace = new Ace(links[0].ace);
-                ace.auth.logIn(credentials.username, credentials.password, function (err, data) {
-                    should.not.exist(err);
-                    data.status.should.equal('ok');
-                    data.results[0].GUID.should.be.a.String;
-                    done();
-                });
-            });
     });
 };
 

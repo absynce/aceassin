@@ -1,10 +1,22 @@
-function taskFactory() {
+function taskFactory(extend, request) {
     function Task(options) {
         this.defaults = {
+            id: null
         };
+        this.options  = extend(this.defaults, options);
     }
 
-    Task.prototype.add = function (message) {
+    Task.prototype.addComment = function (guid, comment, options, callback) {
+        var requestObject = {
+            addComments : comment,
+            guid        : guid,
+            taskId      : this.options.id
+        };
+        request('savetask', requestObject, options, addCommentCallback);
+
+        function addCommentCallback(err, addCommentResponse) {
+            callback(err, addCommentResponse);
+        }
     };
 
     return Task;
@@ -12,7 +24,7 @@ function taskFactory() {
 
 // AMD boilerplate
 (function (define) {
-    define([], taskFactory);
+    define(['extend', './request'], taskFactory);
 }(
     typeof define == 'function' && define.amd ? define 
     : function (ids, factory) {
@@ -21,8 +33,9 @@ function taskFactory() {
             module.exports = factory.apply(null, deps);
         }
         else {
-            this.ace      = this.ace || { };
-            this.ace.task = factory();
+            this.Ace      = this.Ace || { };
+            this.Ace.Task = factory(jQuery.extend,
+                                    this.Ace.Request);
         }
     }.bind(this)
 ));

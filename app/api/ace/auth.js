@@ -1,20 +1,27 @@
-function authFactory(extend) {
+function authFactory(extend, request) {
     function Auth(options) {
         this.defaults = {
-            ace: null // Parent ace object.
+            // TODO: Convert guid and loggedIn to a session variable.
+            guid     : null,
+            loggedIn : false
         };
         this.options = extend(this.defaults, options);
     }
 
-    Auth.prototype.logIn = function (username, password, callback) {
+    Auth.prototype.logIn = function (accountId, username, password, requestOptions, callback) {
         var requestObject = {
-            accountId: this.options.ace.options.accountId,
-            username: username,
-            password: password
+            accountId : accountId,
+            username  : username,
+            password  : password
         };
-        this.options.ace.request('login', requestObject, function (err, data) {
-            callback(err, data);
-        });
+        request('login', requestObject, requestOptions, function (err, logInResponse) {
+            if (!err && logInResponse.status === 'ok') {
+                this.options.loggedIn = true;
+                this.options.guid     = logInResponse.GUID;
+            }
+
+            callback(err, logInResponse);
+        }.bind(this));
     };
 
     return Auth;
@@ -22,7 +29,7 @@ function authFactory(extend) {
 
 // AMD boilerplate
 (function (define) {
-    define(['extend'], authFactory);
+    define(['extend', './request'], authFactory);
 }(
     typeof define == 'function' && define.amd ? define 
     : function (ids, factory) {
@@ -31,8 +38,9 @@ function authFactory(extend) {
             module.exports = factory.apply(null, deps);
         }
         else {
-            this.ace = this.ace || { };
-            this.ace.auth = factory(jQuery.extend);
+            this.Ace      = this.Ace || { };
+            this.Ace.Auth = factory(jQuery.extend,
+                                    this.Ace.Request);
         }
     }.bind(this)
 ));

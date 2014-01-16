@@ -4,9 +4,22 @@ function projectFactory(extend) {
             id: 0
         };
         this.options = extend(this.defaults, options);
+        
+        this.init();
     }
+    
+    Project.prototype.tasks = [];
+    Project.prototype.tasks.add = function (task) {
+        task.project = this.project;
+        this.push(task);
+        return task;
+    };
 
     Project.prototype.add = function (message) {
+    };
+    
+    Project.prototype.init = function () {
+        this.tasks.project = this;
     };
 
     return Project;

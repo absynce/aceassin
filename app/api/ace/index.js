@@ -1,18 +1,15 @@
 function aceFactory(auth,
                     comment,
                     extend,
-                    http,
-                    https,
-                    JSONL,
                     project,
-                    task,
-                    querystring) {
+                    task) {
     function Ace(options) {
         this.defaults = {
-            accountId: '',
-            path: '/',
-            ssl: false,
-            hostname: 'api.aceproject.com'
+            accountId : '',
+            loggedIn  : false,
+            path      : '/',
+            ssl       : false,
+            hostname  : 'api.aceproject.com'
         };
         this.options = extend(this.defaults, options);
         
@@ -38,41 +35,6 @@ function aceFactory(auth,
         this.projects.ace = this;
     };
 
-    Ace.prototype.request = function (fct, requestObject, callback) {
-        var agent   = http;
-        var options = {
-            hostname: this.options.hostname,
-        };
-
-        if (this.options.ssl) {
-            agent = https;
-        }
-        
-        // Join fct and path to options.
-        requestObject.format = 'json'; // Set response format to JSON.
-        var query = '?fct=' + fct + '&' + querystring.stringify(requestObject);
-        options.path = this.options.path + query;
-
-        agent.get(options, function (res) {
-            var data = '';
-            res.setEncoding('utf8');
-            res.on('data', function (chunk) {
-                data += chunk;
-            }).on('end', function () {
-                try {
-                    var responseObject = JSONL.parse(data);
-                    callback(null, responseObject);
-                }
-                catch (ex) {
-                    callback(new Error('Could not parse JSON from data.', data));
-                }
-            });
-        }).on('error', function (error) {
-            callback(error);
-        });
-    };
-    
-
     return Ace;
 }
 
@@ -81,12 +43,8 @@ function aceFactory(auth,
     define(['./auth',
             './comment',
             'extend',
-            'http',
-            'https',
-            'json-literal',
             './project',
-            './task',
-            'querystring'], aceFactory);
+            './task'], aceFactory);
 }(
     typeof define == 'function' && define.amd ? define 
     : function (ids, factory) {
@@ -98,8 +56,6 @@ function aceFactory(auth,
             this.Ace = factory(this.Ace.Auth,
                                this.Ace.Comment,
                                jQuery.extend,
-                               http,
-                               https,
                                this.Ace.Project,
                                this.Ace.Task);
         }
